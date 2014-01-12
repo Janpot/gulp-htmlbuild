@@ -17,9 +17,9 @@ var htmlbuild = require("gulp-htmlbuild");
 
 gulp.src("./src/*.html")
   .pipe(htmlbuild({
-    js: function (files) {
+    js: function (files, callback) {
       // concatenate js files
-      gulp.src(files, callback)
+      gulp.src(files)
         .pipe(concat('all.js'))
         .pipe(gulp.dest('./dist'));
       callback(null, 'dist/all.js');
