@@ -1,0 +1,41 @@
+{
+  "name": "gulp-htmlbuild",
+  "version": "0.0.0",
+  "description": "A plugin for Gulp",
+  "keywords": [
+    "gulpplugin"
+  ],
+  "homepage": "https://github.com/Janpot/gulp-htmlbuild",
+  "bugs": "https://github.com/Janpot/gulp-htmlbuild/issues",
+  "author": {
+    "name": "",
+    "email": "",
+    "url": "https://github.com/Janpot"
+  },
+  "main": "./index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Janpot/gulp-htmlbuild.git"
+  },
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "dependencies": {
+    "gulp-util": "~2.2.0",
+    "event-stream": "*"
+  },
+  "devDependencies": {
+    "mocha": "~1.14.0",
+    "should": "~2.1.0",
+    "chai": "~1.8.1"
+  },
+  "engines": {
+    "node": ">=0.8.0",
+    "npm": ">=1.2.10"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ]
+}
