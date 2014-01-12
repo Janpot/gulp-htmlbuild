@@ -12,7 +12,7 @@
     "email": "",
     "url": "https://github.com/Janpot"
   },
-  "main": "./index.js",
+  "main": "./lib/index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/Janpot/gulp-htmlbuild.git"
