@@ -1,6 +1,10 @@
 # gulp-htmlbuild [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url]
 
-> Extract content from html documents and replace by build result
+> Extract content from html documents and replace by build result, analog to grunt-usemin
+
+## Warning
+
+I'm still prototyping on this package so expect changes to it's API! Also, I'm open to suggestions.
 
 ## Usage
 
@@ -19,14 +23,54 @@ gulp.src("./src/*.html")
   .pipe(htmlbuild({
     js: function (files, callback) {
       // concatenate js files
-      gulp.src(files)
+      gulp.src(files, { cwd: 'app' })
         .pipe(concat('all.js'))
         .pipe(gulp.dest('./dist'));
-      callback(null, 'dist/all.js');
+      callback(null, 'all.js');
     }
   }))
   .pipe(gulp.dest("./dist"));
 ```
+
+it will take following html file
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  
+  <!-- htmlbuild:js -->
+  <script src="src1.js"></script>
+  <script src="src2.js"></script>
+  <script src="src3.js"></script>
+  <!-- endbuild  -->
+  
+</body>
+</html>
+```
+
+and turn it into:
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  
+  <script src="all.js"></script>
+  
+</body>
+</html>
+```
+
+While concatenating the scripts in the meantime.
 
 ## API
 
