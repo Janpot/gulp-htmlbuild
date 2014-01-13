@@ -3,7 +3,9 @@
 
 var util   = require('util'),
     assert = require('chai').assert,
-    parser = require('../lib/parser');
+    parser = require('../lib/parser'),
+    Block  = require('../lib/Block'),
+    tutils = require('./testUtils');
 
 var fixtures = [
   {
@@ -29,7 +31,8 @@ var fixtures = [
   }, {
     line: '<!-- htmlbuild -->',
     expect: {
-      type: parser._tokens.LINE
+      type: parser._tokens.LINE,
+      target: null
     }
   }, {
     line: '  <!--   endbuild   -->  ',
@@ -40,8 +43,25 @@ var fixtures = [
 ];
 
 
+function assertParseResult(expected, got) {
+  assert.isArray(got);
+  assert.lengthOf(got, expected.length);
+  expected.forEach(function (expectedBlock, i) {
+    var gotBlock = got[i];
+    assert.instanceOf(gotBlock, Block);
+    for (var property in expectedBlock) {
+      assert.property(gotBlock, property);
+      
+      var expectedVal = expectedBlock[property],
+          gotVal      = expectedBlock[property];
+      
+      assert.deepEqual(expectedVal, gotVal);
+    }
+  });
+}
 
-describe('parser', function () {
+
+describe('parsing', function () {
 
   describe('tokenizer', function () {
     
@@ -58,6 +78,108 @@ describe('parser', function () {
           assert.propertyVal(token, property, value);
         }
       });
+    });
+    
+  });
+  
+  describe('parser', function () {
+    
+    
+  
+    it('shouldn\'t process a file with an unclosed block', function (done) {
+      
+      parser.parse({
+        path: 'somePath',
+        contents: new Buffer([
+          'something',
+          '<!-- htmlbuild:js -->',
+          'something else'
+        ].join('\n'))
+      }, function (error) {
+        tutils.assertError({
+          lineNumber: 2,
+          fileName: 'somePath'
+        }, error);
+        setImmediate(done);
+      });
+      
+    });
+    
+    it('shouldn\'t process a file with unopened block', function (done) {
+      
+      parser.parse({
+        path: 'somePath',
+        contents: new Buffer([
+          'something',
+          '<!-- endbuild -->',
+          'something else'
+        ].join('\n'))
+      }, function (error) {
+        tutils.assertError({
+          lineNumber: 2,
+          fileName: 'somePath'
+        }, error);
+        setImmediate(done);
+      });
+      
+    });
+    
+    it('shouldn\'t process a file with a block in a block', function (done) {
+      
+      parser.parse({
+        path: 'somePath',
+        contents: new Buffer([
+          'something',
+          '<!-- htmlbuild:js -->',
+          '<!-- htmlbuild:js -->',
+          'something else'
+        ].join('\n'))
+      }, function (error) {
+        tutils.assertError({
+          lineNumber: 3,
+          fileName: 'somePath'
+        }, error);
+        setImmediate(done);
+      });
+      
+    });
+    
+    it('should process a file with a proper block', function (done) {
+      
+      parser.parse({
+        path: 'somePath',
+        contents: new Buffer([
+          'something',
+          '  <!-- htmlbuild:js -->',
+          'some content',
+          '<!-- endbuild -->',
+          'something else'
+        ].join('\n'))
+      }, function (error, result) {
+        assert.notOk(error);
+        assertParseResult([
+          {
+            lineNumber: 1,
+            lines: [
+              'something'
+            ]
+          }, {
+            target: 'js',
+            indent: '  ',
+            lineNumber: 2,
+            lines: [
+              'some content'
+            ]
+          }, {
+            lineNumber: 5,
+            lines: [
+              'something else'
+            ]
+          }
+        ], result);
+        setImmediate(done);
+      });
+      
     });
     
   });

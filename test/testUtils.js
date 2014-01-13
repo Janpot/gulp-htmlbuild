@@ -11,6 +11,8 @@ var CWD             = 'test',
     EXPECTED_FOLDER = 'expected',
     FIXTURES_FOLDER = 'fixtures';
 
+var PLUGIN_NAME = require('../package').name;
+
 function getExpected(file) {
   var base     = path.join(CWD, EXPECTED_FOLDER),
       filePath = path.join(base, file);
@@ -55,12 +57,27 @@ function mockConcatBuilder() {
   };
 }
 
+function assertError(expected, got) {
+  assert.instanceOf(got, gutil.PluginError);
+  assert.propertyVal(got, 'plugin', PLUGIN_NAME);
+
+  for (var property in expected) {
+    var val = expected[property];
+    assert.propertyVal(got, property, val);
+  }
+}
+
 
 function runTest(options, done) {
-  var stream  = htmlbuild(options.options);
+  var stream    = htmlbuild(options.options),
+      expectErr = options.expectedErr;
 
   stream.on('error', function (error) {
     if (options.expectedErr) {
+      if (!(options.expectedErr instanceof Object)) {
+        expectErr = {};
+      }
+      assertError(expectErr, error);
       done();
     } else {
       done(error);
@@ -90,6 +107,7 @@ module.exports = {
   getExpected: getExpected,
   getFixture: getFixture,
   mockConcatBuilder: mockConcatBuilder,
-  runTest: runTest
+  runTest: runTest,
+  assertError: assertError
 };
 

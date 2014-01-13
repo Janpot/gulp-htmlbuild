@@ -3,9 +3,6 @@
 
 var tutils    = require('./testUtils');
 
-require('mocha');
-
-
 describe('htmlbuild:js', function () {
 
 
@@ -61,10 +58,66 @@ describe('htmlbuild:js', function () {
 
   it('should error when no builder defined for detected block', function (done) {
     
+    var srcFile = tutils.getFixture('single-script-block.html');
+    
     tutils.runTest({
-      expectedErr : true,
-      srcFile     : tutils.getFixture('single-script-block.html'),
+      expectedErr : {
+        lineNumber: 9,
+        fileName: srcFile.path
+      },
+      srcFile     : srcFile,
       options     : { }
+    }, done);
+    
+  });
+
+  it('should error on an unclosed block', function (done) {
+    
+    var srcFile = tutils.getFixture('unclosed-block.html');
+    
+    tutils.runTest({
+      expectedErr : {
+        lineNumber: 9,
+        fileName: srcFile.path
+      },
+      srcFile     : srcFile,
+      options     : {
+        js: tutils.mockConcatBuilder()
+      }
+    }, done);
+    
+  });
+
+  it('should error on an unopened block', function (done) {
+    
+    var srcFile = tutils.getFixture('unopened-block.html');
+    
+    tutils.runTest({
+      expectedErr : {
+        lineNumber: 9,
+        fileName: srcFile.path
+      },
+      srcFile     : srcFile,
+      options     : {
+        js: tutils.mockConcatBuilder()
+      }
+    }, done);
+    
+  });
+
+  it('should error on a block within a block', function (done) {
+    
+    var srcFile = tutils.getFixture('block-in-block.html');
+    
+    tutils.runTest({
+      expectedErr : {
+        lineNumber: 10,
+        fileName: srcFile.path
+      },
+      srcFile     : srcFile,
+      options     : {
+        js: tutils.mockConcatBuilder()
+      }
     }, done);
     
   });

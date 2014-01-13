@@ -1,35 +1,24 @@
 /*global describe, it*/
 'use strict';
 
-var assert    = require('chai').assert,
-    tutils    = require('./testUtils'),
-    htmlbuild = require('../');
-
-require('mocha');
-
+var tutils    = require('./testUtils');
 
 describe('htmlbuild', function () {
 
   it('should error on stream', function (done) {
 
-    var srcFile = tutils.getFixture('single-script-block.html', { stream: true }),
-        builder = tutils.mockConcatBuilder();
+    var srcFile = tutils.getFixture('single-script-block.html', { stream: true });
     
-    var stream  = htmlbuild({
-      js: builder
-    });
-
-    stream.on('error', function (err) {
-      assert.isDefined(err);
-      done();
-    });
-
-    stream.on('data', function () {
-      assert.fail();
-    });
-
-    stream.write(srcFile);
-    stream.end();
+    tutils.runTest({
+      expectedErr : {
+        fileName: srcFile.path
+      },
+      srcFile     : srcFile,
+      options     : {
+        js: tutils.mockConcatBuilder()
+      }
+    }, done);
+    
   });
 
   it('should process html with no blocks defined', function (done) {
