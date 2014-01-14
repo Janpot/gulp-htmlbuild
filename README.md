@@ -26,7 +26,7 @@ gulp.src("./src/*.html")
       gulp.src(files, { cwd: 'app' })
         .pipe(concat('all.js'))
         .pipe(gulp.dest('./dist'));
-      callback(null, 'all.js');
+      callback(null, [ 'all.js' ]);
     }
   }))
   .pipe(gulp.dest("./dist"));
