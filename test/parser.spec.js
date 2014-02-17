@@ -3,6 +3,7 @@
 
 var util   = require('util'),
     assert = require('chai').assert,
+    gutil = require('gulp-util'),
     parser = require('../lib/parser'),
     Block  = require('../lib/Block'),
     tutils = require('./testUtils');
@@ -12,15 +13,13 @@ var fixtures = [
     line: '<!-- htmlbuild:js -->',
     expect: {
       type: parser._tokens.BLOCK_START,
-      target: 'js',
-      indent: ''
+      target: 'js'
     }
   }, {
     line: '  <!--   htmlbuild:js   -->  ',
     expect: {
       type: parser._tokens.BLOCK_START,
-      target: 'js',
-      indent: '  '
+      target: 'js'
     }
   }, {
     line: '<!-- htmlbuild:css -->',
@@ -43,23 +42,17 @@ var fixtures = [
 ];
 
 
-function assertParseResult(expected, got) {
-  assert.isArray(got);
-  assert.lengthOf(got, expected.length);
-  expected.forEach(function (expectedBlock, i) {
-    var gotBlock = got[i];
-    assert.instanceOf(gotBlock, Block);
-    for (var property in expectedBlock) {
-      assert.property(gotBlock, property);
-      
-      var expectedVal = expectedBlock[property],
-          gotVal      = expectedBlock[property];
-      
-      assert.deepEqual(expectedVal, gotVal);
-    }
-  });
-}
+function assertBlock(expectedBlock, gotBlock) {
+  assert.instanceOf(gotBlock, Block);
+  for (var property in expectedBlock) {
+    assert.property(gotBlock, property);
 
+    var expectedVal = expectedBlock[property],
+        gotVal      = expectedBlock[property];
+
+    assert.deepEqual(expectedVal, gotVal);
+  }
+}
 
 describe('parsing', function () {
 
@@ -83,50 +76,54 @@ describe('parsing', function () {
   });
   
   describe('parser', function () {
-    
-    
   
     it('shouldn\'t process a file with an unclosed block', function (done) {
       
-      parser.parse({
+      var fixture = new gutil.File({
         path: 'somePath',
         contents: new Buffer([
           'something',
           '<!-- htmlbuild:js -->',
           'something else'
         ].join('\n'))
-      }, function (error) {
-        tutils.assertError({
-          lineNumber: 2,
-          fileName: 'somePath'
-        }, error);
-        setImmediate(done);
       });
+      
+      parser.parse(fixture)
+        .on('error', function (error) {
+          tutils.assertError({
+            lineNumber: 2,
+            fileName: 'somePath'
+          }, error);
+          setImmediate(done);
+        });
       
     });
     
     it('shouldn\'t process a file with unopened block', function (done) {
       
-      parser.parse({
+      var fixture = new gutil.File({
         path: 'somePath',
         contents: new Buffer([
           'something',
           '<!-- endbuild -->',
           'something else'
         ].join('\n'))
-      }, function (error) {
-        tutils.assertError({
-          lineNumber: 2,
-          fileName: 'somePath'
-        }, error);
-        setImmediate(done);
       });
+      
+      parser.parse(fixture)
+        .on('error', function (error) {
+          tutils.assertError({
+            lineNumber: 2,
+            fileName: 'somePath'
+          }, error);
+          setImmediate(done);
+        });
       
     });
     
     it('shouldn\'t process a file with a block in a block', function (done) {
       
-      parser.parse({
+      var fixture = new gutil.File({
         path: 'somePath',
         contents: new Buffer([
           'something',
@@ -134,19 +131,22 @@ describe('parsing', function () {
           '<!-- htmlbuild:js -->',
           'something else'
         ].join('\n'))
-      }, function (error) {
-        tutils.assertError({
-          lineNumber: 3,
-          fileName: 'somePath'
-        }, error);
-        setImmediate(done);
       });
+      
+      parser.parse(fixture)
+        .on('error', function (error) {
+          tutils.assertError({
+            lineNumber: 3,
+            fileName: 'somePath'
+          }, error);
+          setImmediate(done);
+        });
       
     });
     
     it('should process a file with a proper block', function (done) {
       
-      parser.parse({
+      var fixture = new gutil.File({
         path: 'somePath',
         contents: new Buffer([
           'something',
@@ -155,31 +155,38 @@ describe('parsing', function () {
           '<!-- endbuild -->',
           'something else'
         ].join('\n'))
-      }, function (error, result) {
-        assert.notOk(error);
-        assertParseResult([
-          {
-            lineNumber: 1,
-            lines: [
-              'something'
-            ]
-          }, {
-            target: 'js',
-            indent: '  ',
-            lineNumber: 2,
-            lines: [
-              'some content'
-            ]
-          }, {
-            lineNumber: 5,
-            lines: [
-              'something else'
-            ]
-          }
-        ], result);
-        setImmediate(done);
       });
       
+      var expected = [
+        {
+          lineNumber: 1,
+          lines: [
+            'something'
+          ]
+        }, {
+          target: 'js',
+          lineNumber: 2,
+          lines: [
+            'some content'
+          ]
+        }, {
+          lineNumber: 5,
+          lines: [
+            'something else'
+          ]
+        }
+      ];
+      
+      parser.parse(fixture)
+        .on('error', done)
+        .on('data', function (block) {
+          assertBlock(expected.shift(), block);
+        })
+        .on('end', function () {
+          assert.lengthOf(expected, 0);
+          done();
+        });
+
     });
     
   });

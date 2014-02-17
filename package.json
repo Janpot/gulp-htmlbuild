@@ -18,16 +18,24 @@
     "url": "git://github.com/Janpot/gulp-htmlbuild.git"
   },
   "scripts": {
-    "test": "mocha -R spec"
+    "test": "gulp mocha"
   },
   "dependencies": {
-    "gulp-util": "~2.2.0",
-    "event-stream": "*"
+    "gulp-util": "~2.2.14",
+    "event-stream": "*",
+    "through2": "~0.4.1",
+    "lazy-flatten-stream": "~0.1.0",
+    "pause-stream": "0.0.11",
+    "stream-stream": "~1.2.6",
+    "readable-stream": "~1.1.10"
   },
   "devDependencies": {
-    "mocha": "~1.14.0",
-    "should": "~2.1.0",
-    "chai": "~1.8.1"
+    "mocha": "~1.17.0",
+    "chai": "~1.9.0",
+    "gulp-load-tasks": "~0.1.1",
+    "gulp": "~3.5.2",
+    "gulp-mocha": "~0.4.1",
+    "gulp-debug": "~0.2.0"
   },
   "engines": {
     "node": ">=0.8.0",
