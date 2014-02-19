@@ -51,7 +51,7 @@ describe('htmlbuild', function () {
       srcFile      : tutils.getFixture('single-script-block.html'),
       options      : {
         js: function (block) {
-          block.end('replace');
+          block.end('  <script src="replace"></script>');
         }
       }
     }, done);
@@ -66,7 +66,7 @@ describe('htmlbuild', function () {
       options      : {
         js: function (block) {
           setImmediate(function () {
-            block.end('replace');
+            block.end('  <script src="replace"></script>');
           });
         }
       }
@@ -82,7 +82,7 @@ describe('htmlbuild', function () {
       options      : {
         js: function (block) {
           block.pipe(es.wait(function () {
-            block.end('replace');
+            block.end('  <script src="replace"></script>');
           }));
         }
       }
@@ -98,7 +98,7 @@ describe('htmlbuild', function () {
       options      : {
         js: function (block) {
           block.pipe(es.wait(function () { }));
-          block.end('replace');
+          block.end('  <script src="replace"></script>');
         }
       }
     }, done);
