@@ -13,13 +13,15 @@ var fixtures = [
     line: '<!-- htmlbuild:js -->',
     expect: {
       type: parser._tokens.BLOCK_START,
-      target: 'js'
+      target: 'js',
+      indent: ''
     }
   }, {
     line: '  <!--   htmlbuild:js   -->  ',
     expect: {
       type: parser._tokens.BLOCK_START,
-      target: 'js'
+      target: 'js',
+      indent: '  '
     }
   }, {
     line: '<!-- htmlbuild:css -->',
@@ -165,6 +167,7 @@ describe('parsing', function () {
           ]
         }, {
           target: 'js',
+          indent: '  ',
           lineNumber: 2,
           lines: [
             'some content'

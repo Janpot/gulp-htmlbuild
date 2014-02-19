@@ -44,6 +44,7 @@ describe('builder', function () {
     var blockStream = es.readArray([
       new Block({
         target: 'target1',
+        indent: '  ',
         lines: [
           'a line',
           'another line'
@@ -60,6 +61,8 @@ describe('builder', function () {
     blockStream
       .pipe(builder.build({
         target1: function (block) {
+          assert.strictEqual(block.indent, '  ');
+          
           var expected = [
             'a line',
             'another line'

@@ -32,10 +32,6 @@ gulp.task('build', function () {
     .pipe(tasks.debug())
     .pipe(htmlbuild({
       js: function (block) {
-        block.pipe(tasks.util.buffer(function (error, files) {
-          console.log('files %j', files);
-        }));
-        console.log('ending it');
         block.end('fuck it');
       }
     }))
