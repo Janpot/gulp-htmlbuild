@@ -2,7 +2,9 @@
 'use strict';
 
 var tutils = require('./testUtils'),
-    es = require('event-stream');
+    es = require('event-stream'),
+    htmlbuild = require('../lib'),
+    assert = require('chai').assert;
 
 describe('htmlbuild', function () {
 
@@ -44,7 +46,7 @@ describe('htmlbuild', function () {
     
   });
 
-  it('should process html with replace sync', function (done) {
+  it('should process html with replace', function (done) {
     
     tutils.runTest({
       expectedFile : tutils.getExpected('single-script-block-with-replace.html'),
@@ -58,48 +60,23 @@ describe('htmlbuild', function () {
     
   });
 
-  it('should process html with replace async', function (done) {
+  it('should process html with js preprocessor', function (done) {
     
     tutils.runTest({
       expectedFile : tutils.getExpected('single-script-block-with-replace.html'),
       srcFile      : tutils.getFixture('single-script-block.html'),
       options      : {
-        js: function (block) {
-          setImmediate(function () {
-            block.end('  <script src="replace"></script>');
-          });
-        }
-      }
-    }, done);
-    
-  });
-
-  it('should process html with replace after read', function (done) {
-    
-    tutils.runTest({
-      expectedFile : tutils.getExpected('single-script-block-with-replace.html'),
-      srcFile      : tutils.getFixture('single-script-block.html'),
-      options      : {
-        js: function (block) {
-          block.pipe(es.wait(function () {
-            block.end('  <script src="replace"></script>');
+        js: htmlbuild.preprocess.js(function (block) {
+          block.pipe(es.writeArray(function (error, srcs) {
+            assert.notOk(error);
+            assert.deepEqual(srcs, [
+              'src1',
+              'src2',
+              'src3'
+            ]);
+            block.end('replace');
           }));
-        }
-      }
-    }, done);
-    
-  });
-
-  it('should process html with replace before read', function (done) {
-    
-    tutils.runTest({
-      expectedFile : tutils.getExpected('single-script-block-with-replace.html'),
-      srcFile      : tutils.getFixture('single-script-block.html'),
-      options      : {
-        js: function (block) {
-          block.pipe(es.wait(function () { }));
-          block.end('  <script src="replace"></script>');
-        }
+        })
       }
     }, done);
     

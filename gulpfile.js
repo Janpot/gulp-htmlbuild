@@ -1,8 +1,7 @@
 'use strict';
 
 var gulp  = require('gulp'),
-    tasks = require('gulp-load-tasks')(),
-    htmlbuild = require('./lib');
+    tasks = require('gulp-load-tasks')();
 
 
 gulp.task('mocha', function () {
@@ -25,17 +24,4 @@ gulp.task('mocha-watch', ['mocha'], function () {
     './test/**/*.spec.js'
   ], ['mocha']);
   
-});
-
-gulp.task('build', function () {
-  gulp.src(['./test/fixtures/multiple-script-blocks.html'])
-    .pipe(tasks.debug())
-    .pipe(htmlbuild({
-      js: function (block) {
-        block.end('fuck it');
-      }
-    }))
-    .pipe(tasks.debug({
-      verbose: true
-    }));
 });

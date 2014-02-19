@@ -35,7 +35,8 @@
     "gulp-load-tasks": "~0.1.1",
     "gulp": "~3.5.2",
     "gulp-mocha": "~0.4.1",
-    "gulp-debug": "~0.2.0"
+    "gulp-debug": "~0.2.0",
+    "gulp-concat": "~2.1.7"
   },
   "engines": {
     "node": ">=0.8.0",
