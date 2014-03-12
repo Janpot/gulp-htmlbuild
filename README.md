@@ -94,7 +94,7 @@ a preprocessor you can use to wrap your buildfunction in. It extracts script pat
 
 a function that has the same form as a normal buildfunction, only the argument here is a stream that contains script paths. You are expected to write script paths to this stream as well.
 
-### htmlbuild.preprocess.ssc(buildFn)
+### htmlbuild.preprocess.css(buildFn)
 
 a preprocessor you can use to wrap your buildfunction in. It extracts stylesheet paths from the block. In this case you also write paths to the block. They will get templated into link elements.
 
