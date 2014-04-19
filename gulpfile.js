@@ -1,13 +1,13 @@
 'use strict';
 
 var gulp  = require('gulp'),
-    tasks = require('gulp-load-tasks')();
+    plugins = require('gulp-load-plugins')();
 
 
 gulp.task('mocha', function () {
   
   gulp.src('./test/**/*.spec.js', {read: false})
-    .pipe(tasks.mocha({
+    .pipe(plugins.mocha({
       reporter: 'spec'
     }))
     .on('error', function (error) {
