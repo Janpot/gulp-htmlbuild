@@ -110,7 +110,7 @@ example gulp file:
 
 ```javascript
 var gulp  = require('gulp'),
-    tasks = require('gulp-load-tasks')(),
+    plugins = require('gulp-load-plugins')(),
     htmlbuild = require('../lib'),
     es = require('event-stream');
 
@@ -129,12 +129,12 @@ var gulpSrc = function (opts) {
 
 
 var jsBuild = es.pipeline(
-  tasks.concat('concat.js'),
+  plugins.concat('concat.js'),
   gulp.dest('./build/js')
 );
 
 var cssBuild = es.pipeline(
-  tasks.concat('concat.css'),
+  plugins.concat('concat.css'),
   gulp.dest('./build/css')
 );
 
