@@ -84,10 +84,11 @@ You can find more examples in the `example` folder.
 ### htmlbuild(options)
 
 #### options
-`options` is an object which maps targets to build functions. The buildfunctions take 1 argument, a stream which represents the block. Read from this stream to get the content of the block and write to it to replace it. 
+`options` is an object which maps targets to build functions. The build functions take a single argument, a stream which represents the block. Read from this stream to get the content of the block and write to it to replace it. 
 The stream has the following properties:
-       - `indent` - which is a string containing the indentation of the block directive.
-       - `args` - a string array of arguments passed in via the block directive.
+
+ - {String} `indent` : string containing the indentation of the block directive.
+ - {Array}  `args`   : string array of arguments passed in via the block directive.
 
 ### htmlbuild.preprocess.js(buildFn)
 
