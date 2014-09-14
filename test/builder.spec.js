@@ -48,7 +48,8 @@ describe('builder', function () {
         lines: [
           'a line',
           'another line'
-        ]
+        ],
+        args: ['arg1', 'arg2']
       }),
       new Block({
         target: 'target2',
@@ -62,6 +63,7 @@ describe('builder', function () {
       .pipe(builder.build({
         target1: function (block) {
           assert.strictEqual(block.indent, '  ');
+          assert.deepEqual(block.args, ['arg1', 'arg2']);
           
           var expected = [
             'a line',
@@ -78,6 +80,7 @@ describe('builder', function () {
             });
         },
         target2: function (block) {
+          assert.deepEqual(block.args, []);
           var expected = [
             'yet another line'
           ];

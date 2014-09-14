@@ -84,7 +84,11 @@ You can find more examples in the `example` folder.
 ### htmlbuild(options)
 
 #### options
-`options` is an object which maps targets to build functions. the buildfunctions take 1 argument, a stream which represents the block. Read from this stream to get the content of the block and write to it to replace it. the stream also has an `indent` property which is a string containing the indentation of the block directive.
+`options` is an object which maps targets to build functions. The build functions take a single argument, a stream which represents the block. Read from this stream to get the content of the block and write to it to replace it. 
+The stream has the following properties:
+
+ - {String} `indent` : string containing the indentation of the block directive.
+ - {Array}  `args`   : string array of arguments passed in via the block directive.
 
 ### htmlbuild.preprocess.js(buildFn)
 
@@ -168,11 +172,11 @@ gulp.task('build', function () {
         block.end();
       },
       
-      // add a header with this target
-      header: function (block) {
+      // add a template with this target
+      template: function (block) {
         es.readArray([
           '<!--',
-          '  processed by htmlbuild',
+          '  processed by htmlbuild (' + block.args[0] + ')',
           '-->'
         ].map(function (str) {
           return block.indent + str;
@@ -201,7 +205,7 @@ it will take following html file
   </head>
   <body>
   
-    <!-- htmlbuild:header -->
+    <!-- htmlbuild:template header -->
     <!-- endbuild -->
   
     <!-- htmlbuild:js -->
@@ -211,6 +215,9 @@ it will take following html file
     
     <!-- htmlbuild:remove -->
     This will be removed in the build output
+    <!-- endbuild -->
+  
+    <!-- htmlbuild:template footer -->
     <!-- endbuild -->
 
   </body>
@@ -232,12 +239,15 @@ and turn it into:
   <body>
   
     <!--
-      processed by htmlbuild
+      processed by htmlbuild (header)
     -->
   
     <script src="js/concat.js"></script>
     
 
+    <!--
+      processed by htmlbuild (footer)
+    -->
   </body>
 </html>
 ```
