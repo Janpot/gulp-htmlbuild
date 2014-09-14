@@ -3,6 +3,7 @@
 
 var util   = require('util'),
     assert = require('chai').assert,
+    expect = require('chai').expect,
     gutil = require('gulp-util'),
     parser = require('../lib/parser'),
     Block  = require('../lib/Block'),
@@ -22,6 +23,22 @@ var fixtures = [
       type: parser._tokens.BLOCK_START,
       target: 'js',
       indent: '  '
+    }
+  }, {
+    line: '<!-- htmlbuild:js arg1 -->',
+    expect: {
+        type: parser._tokens.BLOCK_START,
+        target: 'js',
+        indent: '',
+        args: ['arg1']
+    }
+  }, {
+    line: '<!-- htmlbuild:js arg1 arg2 -->',
+    expect: {
+        type: parser._tokens.BLOCK_START,
+        target: 'js',
+        indent: '',
+        args: ['arg1', 'arg2']
     }
   }, {
     line: '<!-- htmlbuild:css -->',
@@ -70,7 +87,11 @@ describe('parsing', function () {
         assert.strictEqual(fixture.line, token.line);
         for (var property in fixture.expect) {
           var value = fixture.expect[property];
-          assert.propertyVal(token, property, value);
+            if (value && value.length) {
+                expect(token[property]).deep.equal(value);
+            } else {
+                assert.propertyVal(token, property, value);
+            }
         }
       });
     });
