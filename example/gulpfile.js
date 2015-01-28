@@ -37,7 +37,7 @@ gulp.task('build', function () {
       // build js with preprocessor
       js: htmlbuild.preprocess.js(function (block) {
         
-        block.pipe(gulpSrc())
+        block.pipe(gulpSrc({ root: __dirname }))
           .pipe(jsBuild);
         
         block.end('js/concat.js');
@@ -47,7 +47,7 @@ gulp.task('build', function () {
       // build css with preprocessor
       css: htmlbuild.preprocess.css(function (block) {
         
-        block.pipe(gulpSrc())
+        block.pipe(gulpSrc({ root: __dirname }))
           .pipe(cssBuild);
         
         block.end('css/concat.css');

@@ -30,13 +30,13 @@
     "readable-stream": "~1.1.10"
   },
   "devDependencies": {
-    "mocha": "~1.17.0",
     "chai": "~1.9.0",
-    "gulp-load-plugins": "^0.5.0",
-    "gulp": "~3.5.2",
-    "gulp-mocha": "~0.4.1",
+    "gulp": "~3.8.10",
+    "gulp-concat": "~2.1.7",
     "gulp-debug": "~0.2.0",
-    "gulp-concat": "~2.1.7"
+    "gulp-load-plugins": "^0.5.0",
+    "gulp-mocha": "~0.4.1",
+    "mocha": "~1.17.0"
   },
   "engines": {
     "node": ">=0.8.0",
