@@ -8,7 +8,7 @@ var assert = require('chai').assert,
 
 
 describe('preprocess', function () {
-  
+
   describe('js', function () {
 
     it('should preprocess javascript', function (done) {
@@ -18,17 +18,19 @@ describe('preprocess', function () {
           assert.notOk(error);
           assert.deepEqual(sources, [
             'the-src',
-            'the-other-src'
+            'the-other-src',
+            'the-src-with'
           ]);
           block.write('result-1');
           block.end('result-2');
         }));
       });
-      
+
       var input = es.readArray([
         '  <script src="the-src"></script>',
         'not a script',
-        '<script type="text/javascript" src="the-other-src"></script>'
+        '<script type="text/javascript" src="the-other-src"></script>',
+        '<script src="the-src-with?query=string"></script>'
       ]);
       var output = es.through();
       output.pipe(es.writeArray(function (error, result) {
@@ -39,16 +41,16 @@ describe('preprocess', function () {
         ]);
         done();
       }));
-      
+
       var blockStream = es.duplex(output, input);
       blockStream.indent = '  ';
-      
+
       preprocessor(blockStream);
 
     });
-    
+
   });
-  
+
   describe('css', function () {
 
     it('should preprocess css', function (done) {
@@ -58,17 +60,19 @@ describe('preprocess', function () {
           assert.notOk(error);
           assert.deepEqual(sources, [
             'the-src',
-            'the-other-src'
+            'the-other-src',
+            './the-src-with'
           ]);
           block.write('result-1');
           block.end('result-2');
         }));
       });
-      
+
       var input = es.readArray([
         '  <link href="the-src"/>',
         'not a stylesheet',
-        '<link rel="stylesheet" href="the-other-src"/>'
+        '<link rel="stylesheet" href="the-other-src"/>',
+        '<link rel="stylesheet" href="./the-src-with?query=string"/>'
       ]);
       var output = es.through();
       output.pipe(es.writeArray(function (error, result) {
@@ -79,15 +83,15 @@ describe('preprocess', function () {
         ]);
         done();
       }));
-      
+
       var blockStream = es.duplex(output, input);
       blockStream.indent = '  ';
-      
+
       preprocessor(blockStream);
 
     });
-    
+
   });
 
-  
+
 });

@@ -12,18 +12,18 @@ var assert = require('chai').assert,
 describe('flatten', function () {
 
   it('should flatten a stream', function (done) {
-    
-    
+
+
     var streamOfStreams = new PassThrough({objectMode: true});
 
     streamOfStreams
       .pipe(flatten())
       .pipe(es.wait(function (err, result) {
         assert.notOk(err);
-        assert.strictEqual(result, '12345678');
+        assert.strictEqual(String(result), '12345678');
         done();
       }));
-    
+
     var stream1 = new PassThrough();
     streamOfStreams.write(stream1);
     stream1.write('1');
@@ -42,8 +42,8 @@ describe('flatten', function () {
     stream3.write('8');
     stream3.end();
     streamOfStreams.end();
-    
+
   });
 
-  
+
 });
