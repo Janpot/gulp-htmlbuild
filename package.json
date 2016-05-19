@@ -23,8 +23,6 @@
   "dependencies": {
     "gulp-util": "~3.0.4",
     "event-stream": "*",
-    "through2": "~0.6.3",
-    "lazy-flatten-stream": "~0.1.0",
     "pause-stream": "0.0.11",
     "stream-stream": "~1.2.6",
     "readable-stream": "~1.1.10"
